@@ -606,10 +606,8 @@ def cleanPoolQC(df):
     return df
 
 def cleanFence(df):
-    if pd.isnull(df['Fence']).sum()>0:
-        fence=df[pd.isnull(df['Fence'])]
-        helpers.impute_subset_with_mode(df,fence,'Fence','Neighborhood')
-    df.loc[(pd.isnull(df['Fence'])), 'Fence']="DNE"
+    
+    df.Fence.fillna('DNE', inplace=True)
     df.Fence = df.Fence.replace({'DNE':0, 'MnWw':1, 'GdWo': 2, 'MnPrv':3, 'GdPrv':4})
     return df
 
