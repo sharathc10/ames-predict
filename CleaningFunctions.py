@@ -330,7 +330,7 @@ def clean_BsmtFinType1(df):
 
 def clean_BsmtFinSF1(df):
     
-    missing_count = sum(df['Neighborhood'].isna())
+    missing_count = sum(df['BsmtFinSF1'].isna())
     
     if missing_count > 0:
         df = helpers.mean_impute_by_neighborhood(df, 'BsmtFinSF1')
@@ -345,7 +345,7 @@ def clean_BsmtFinType2(df):
 
 def clean_BsmtFinSF2(df):
     
-    missing_count = sum(df['Neighborhood'].isna())
+    missing_count = sum(df['BsmtFinSF2'].isna())
     
     if missing_count > 0:
         df = helpers.mean_impute_by_neighborhood(df, 'BsmtFinSF2')
@@ -354,7 +354,7 @@ def clean_BsmtFinSF2(df):
 
 def clean_BsmtUnfSF(df):
     
-    missing_count = sum(df['Neighborhood'].isna())
+    missing_count = sum(df['BsmtUnfSF'].isna())
     
     if missing_count > 0:
         df = helpers.mean_impute_by_neighborhood(df, 'BsmtUnfSF')
@@ -363,7 +363,7 @@ def clean_BsmtUnfSF(df):
 
 def clean_TotalBsmtSF(df):
     
-    missing_count = sum(df['Neighborhood'].isna())
+    missing_count = sum(df['TotalBsmtSF'].isna())
     
     if missing_count > 0:
         df = helpers.mean_impute_by_neighborhood(df, 'TotalBsmtSF')
