@@ -333,7 +333,7 @@ def clean_BsmtFinSF1(df):
     missing_count = sum(df['Neighborhood'].isna())
     
     if missing_count > 0:
-        df = mean_impute_by_neighborhood(df, 'BsmtFinSF1')
+        df = helpers.mean_impute_by_neighborhood(df, 'BsmtFinSF1')
  
     return df
 
@@ -348,7 +348,7 @@ def clean_BsmtFinSF2(df):
     missing_count = sum(df['Neighborhood'].isna())
     
     if missing_count > 0:
-        df = mean_impute_by_neighborhood(df, 'BsmtFinSF2')
+        df = helpers.mean_impute_by_neighborhood(df, 'BsmtFinSF2')
  
     return df
 
@@ -357,7 +357,7 @@ def clean_BsmtUnfSF(df):
     missing_count = sum(df['Neighborhood'].isna())
     
     if missing_count > 0:
-        df = mean_impute_by_neighborhood(df, 'BsmtUnfSF')
+        df = helpers.mean_impute_by_neighborhood(df, 'BsmtUnfSF')
  
     return df
 
@@ -366,54 +366,54 @@ def clean_TotalBsmtSF(df):
     missing_count = sum(df['Neighborhood'].isna())
     
     if missing_count > 0:
-        df = mean_impute_by_neighborhood(df, 'TotalBsmtSF')
+        df = helpers.mean_impute_by_neighborhood(df, 'TotalBsmtSF')
  
     return df
 
 def cleanHeating(df):
     if pd.isnull(df['Heating']).sum()>0:
-        impute_with_mode(df,'Heating','Neighborhood')
+        helpers.impute_with_mode(df,'Heating','Neighborhood')
     df['GasHeating']=df.Heating.map(lambda t:1 if t in ['GasA','GasW'] else 0)
     df.drop(['Heating'],axis=1, inplace=True)
     return df
 
 def cleanHeatingQC(df):
     if pd.isnull(df['HeatingQC']).sum()>0:
-        impute_with_mode(df,'HeatingQC','Neighborhood')
+        helpers.impute_with_mode(df,'HeatingQC','Neighborhood')
     df['GoodHeating']=df.HeatingQC.map(lambda t:1 if t in ['Excellent','Good',] else 0)
     df.drop(['HeatingQC'],axis=1, inplace=True)
     return df
 
 def cleanCentralAir(df):
     if pd.isnull(df['CentralAir']).sum()>0:
-        impute_with_mode(df,'CentralAir','Neighborhood')
+        helpers.impute_with_mode(df,'CentralAir','Neighborhood')
     df['CentralAir']=df.CentralAir.map(lambda t:1 if t=="Yes" else 0)
     return df 
 
 def cleanElectrical(df):
     if pd.isnull(df['Electrical']).sum()>0:
-        impute_with_closest_year(df,'Electrical')
+        helpers.impute_with_closest_year(df,'Electrical')
     df['ModernElectrical']=df.Electrical.map(lambda t:1 if t=='SBrkr' else 0)
     df.drop(['Electrical'],axis=1, inplace=True)
     return df
 
 def clean1stFlrSF(df):
     if pd.isnull(df['1stFlrSF']).sum()>0:
-        impute_with_neighbor_mean(df,'1stFlrSF')
+        helpers.impute_with_neighbor_mean(df,'1stFlrSF')
     df.loc[(pd.isnull(df['1stFlrSF'])), '1stFlrSF']=0
     #check GrLivArea?
     return df
 
 def clean2ndFlrSF(df):
     if pd.isnull(df['2ndFlrSF']).sum()>0:
-        impute_with_neighbor_mean(df,'2ndFlrSF')
+        helpers.impute_with_neighbor_mean(df,'2ndFlrSF')
     df.loc[(pd.isnull(df['2ndFlrSF'])), '2ndFlrSF']=0
     #check GrLivArea?
     return df
 
 def cleanLowQualFinSF(df):
     if pd.isnull(df['LowQualFinSF']).sum()>0:
-        impute_with_neighbor_mean(df,'LowQualFinSF')
+        helpers.impute_with_neighbor_mean(df,'LowQualFinSF')
     df.loc[(pd.isnull(df['LowQualFinSF'])), 'LowQualFinSF']=0
      #check GrLivArea?
     return df
@@ -421,49 +421,49 @@ def cleanLowQualFinSF(df):
 def cleanBsmtFullBath(df):
     if pd.isnull(df['BsmtFullBath']).sum()>0:
         bsmtfullbath=df[pd.isnull(df['BsmtFullBath']) & (df['TotalBsmtSF']>0)]
-        impute_subset_with_grouping_mean(df,bsmtfullbath,'BsmtFullBath','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,bsmtfullbath,'BsmtFullBath','Neighborhood')
         df.loc[(pd.isnull(df['BsmtFullBath'])), 'BsmtFullBath']=0
     return df
 
 def cleanBsmtHalfBath(df):
     if pd.isnull(df['BsmtHalfBath']).sum()>0:
         bsmthalfbath=df[pd.isnull(df['BsmtHalfBath']) & (df['TotalBsmtSF']>0)]
-        impute_subset_with_grouping_mean(df,bsmthalfbath,'BsmtHalfBath','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,bsmthalfbath,'BsmtHalfBath','Neighborhood')
         df.loc[(pd.isnull(df['BsmtHalfBath'])), 'BsmtHalfBath']=0
     return df
 
 def cleanFullBath(df):
     if pd.isnull(df['FullBath']).sum()>0:
         fullbath=df[pd.isnull(df['FullBath']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,fullbath,'FullBath','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,fullbath,'FullBath','Neighborhood')
         df.loc[(pd.isnull(df['FullBath'])), 'FullBath']=0
     return df
 
 def cleanHalfBath(df):
     if pd.isnull(df['HalfBath']).sum()>0:
         halfbath=df[pd.isnull(df['HalfBath']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,halfbath,'HalfBath','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,halfbath,'HalfBath','Neighborhood')
     df.loc[(pd.isnull(df['HalfBath'])), 'HalfBath']=0
     return df
 
 def cleanBedroomAbvGr(df):
     if pd.isnull(df['BedroomAbvGr']).sum()>0:
         bedroomabvgr=df[pd.isnull(df['BedroomAbvGr']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,bedroomabvgr,'BedroomAbvGr','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,bedroomabvgr,'BedroomAbvGr','Neighborhood')
     df.loc[(pd.isnull(df['BedroomAbvGr'])), 'BedroomAbvGr']=0
     return df
 
 def cleanKitchenAbvGr(df):
     if pd.isnull(df['KitchenAbvGr']).sum()>0:
         kitchenabvgr=df[pd.isnull(df['KitchenAbvGr']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,kitchenabvgr,'KitchenAbvGr','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,kitchenabvgr,'KitchenAbvGr','Neighborhood')
     df.loc[(pd.isnull(df['KitchenAbvGr'])), 'KitchenAbvGr']=0
     return df
 
 def cleanKitchenQual(df):
     if pd.isnull(df['KitchenQual']).sum()>0:
         kitchenqual=df[pd.isnull(df['KitchenQual']) & (df['KitchenAbvGr']>0)]
-        impute_subset_with_mode(df,kitchenqual,'KitchenQual','Neighborhood')
+        helpers.impute_subset_with_mode(df,kitchenqual,'KitchenQual','Neighborhood')
     df['GoodKitchen']=df.KitchenQual.map(lambda t:1 if t in ['Excellent','Good',] else 0)
     df.drop(['KitchenQual'],axis=1, inplace=True)
     return df
@@ -471,7 +471,7 @@ def cleanKitchenQual(df):
 def cleanTotRmsAbvGrd(df):
     if pd.isnull(df['TotRmsAbvGrd']).sum()>0:
         totrmsabvgrd=df[pd.isnull(df['TotRmsAbvGrd']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,totrmsabvgrd,'TotRmsAbvGrd','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,totrmsabvgrd,'TotRmsAbvGrd','Neighborhood')
     df.loc[(pd.isnull(df['TotRmsAbvGrd'])), 'TotRmsAbvGrd']=0
     return df
 
@@ -483,14 +483,14 @@ def cleanFunctional(df):
 def cleanFireplaces(df):
     if pd.isnull(df['Fireplaces']).sum()>0:
         fireplaces=df[pd.isnull(df['Fireplaces']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,fireplaces,'Fireplaces','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,fireplaces,'Fireplaces','Neighborhood')
     df.loc[(pd.isnull(df['Fireplaces'])), 'Fireplaces']=0
     return df
 
 def cleanFireplaceQu(df):
     if pd.isnull(df['FireplaceQu']).sum()>0:
         fireplacequal=df[pd.isnull(df['FireplaceQu']) & (df['Fireplaces']>0)]
-        impute_subset_with_mode(df,fireplacequal,'FireplaceQu','Neighborhood')
+        helpers.impute_subset_with_mode(df,fireplacequal,'FireplaceQu','Neighborhood')
     df.loc[(pd.isnull(df['FireplaceQu'])), 'FireplaceQu']="DNE"
     df.FireplaceQu = df.FireplaceQu.replace({'DNE':0, 'Po':1, 'Fa': 2, 'TA':3, 'Gd':4, 'Ex':5})
     return df
@@ -498,7 +498,7 @@ def cleanFireplaceQu(df):
 def cleanGarageType(df):
     if pd.isnull(df['GarageType']).sum()>0:
         garagetype=df[pd.isnull(df['GarageType']) & (df['GarageArea']>0)]
-        impute_subset_with_mode(df,garagetype,'GarageType','Neighborhood')
+        helpers.impute_subset_with_mode(df,garagetype,'GarageType','Neighborhood')
     df.loc[(pd.isnull(df['GarageType'])), 'GarageType']="DNE"
     df.GarageType = df.GarageType.replace({'DNE':0, 'CarPort':1, 'Detchd': 2, '2Types':3, 'Basment':4, 'Attchd':5, 'BuiltIn':6})    
     return df
@@ -506,7 +506,7 @@ def cleanGarageType(df):
 def cleanGarageYrBlt(df):
     if pd.isnull(df['GarageYrBlt']).sum()>0:
         garageyear=df[pd.isnull(df['GarageYrBlt']) & (df['GarageArea']>0)]
-        impute_subset_with_mode(df,garageyear,'GarageYrBlt','Neighborhood')
+        helpers.impute_subset_with_mode(df,garageyear,'GarageYrBlt','Neighborhood')
     df.loc[(pd.isnull(df['GarageYrBlt'])), 'GarageYrBlt']="DNE"
     df.GarageYrBlt = df.GarageYrBlt.replace({'DNE':0})
   
@@ -515,7 +515,7 @@ def cleanGarageYrBlt(df):
 def cleanGarageFinish(df):
     if pd.isnull(df['GarageFinish']).sum()>0:
         garagefinish=df[pd.isnull(df['GarageFinish']) & (df['GarageArea']>0)]
-        impute_subset_with_mode(df,garagefinish,'GarageFinish','Neighborhood')
+        helpers.impute_subset_with_mode(df,garagefinish,'GarageFinish','Neighborhood')
     df.loc[(pd.isnull(df['GarageFinish'])), 'GarageFinish']="DNE"
     df.GarageFinish = df.GarageFinish.replace({'DNE':0, 'Unf':1, 'RFn': 2, 'Fin':3})
     return df
@@ -523,7 +523,7 @@ def cleanGarageFinish(df):
 def cleanGarageCars(df):
     if pd.isnull(df['GarageCars']).sum()>0:
         garagecars=df[pd.isnull(df['GarageCars']) & (df['GarageArea']>0)]
-        impute_subset_with_grouping_mean(df,garagecars,'GarageCars','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,garagecars,'GarageCars','Neighborhood')
     df.loc[(pd.isnull(df['GarageCars'])), 'GarageCars']=0
     return df
 
@@ -535,7 +535,7 @@ def cleanGarageArea(df):
 def cleanGarageQual(df):
     if pd.isnull(df['GarageQual']).sum()>0:
         garagequal=df[pd.isnull(df['GarageQual']) & (df['GarageArea']>0)]
-        impute_subset_with_mode(df,garagequal,'GarageQual','Neighborhood')
+        helpers.impute_subset_with_mode(df,garagequal,'GarageQual','Neighborhood')
     df.loc[(pd.isnull(df['GarageQual'])), 'GarageQual']="DNE"
     df.GarageQual = df.GarageQual.replace({'DNE':0, 'Po':1, 'Fa': 2, 'TA':3, 'Gd':4, 'Ex':5})
     
@@ -544,7 +544,7 @@ def cleanGarageQual(df):
 def cleanGarageCond(df):
     if pd.isnull(df['GarageCond']).sum()>0:
         garagecond=df[pd.isnull(df['GarageCond']) & (df['GarageArea']>0)]
-        impute_subset_with_mode(df,garagecond,'GarageCond','Neighborhood')
+        helpers.impute_subset_with_mode(df,garagecond,'GarageCond','Neighborhood')
     df.loc[(pd.isnull(df['GarageCond'])), 'GarageCond']="DNE"
     df.GarageCond = df.GarageCond.replace({'DNE':0, 'Po':1, 'Fa': 2, 'TA':3, 'Gd':4, 'Ex':5})
     return df
@@ -552,7 +552,7 @@ def cleanGarageCond(df):
 def cleanPavedDrive(df):
     if pd.isnull(df['PavedDrive']).sum()>0:
         paveddrive=df[pd.isnull(df['PavedDrive'])]
-        impute_subset_with_mode(df,paveddrive,'PavedDrive','Neighborhood')
+        helpers.impute_subset_with_mode(df,paveddrive,'PavedDrive','Neighborhood')
     df['PavedDrive']=df.PavedDrive.map(lambda t:1 if t == "Y" else 0)
 
     return df
@@ -560,7 +560,7 @@ def cleanPavedDrive(df):
 def cleanWoodDeckSF(df):
     if pd.isnull(df['WoodDeckSF']).sum()>0:
         wooddeck=df[pd.isnull(df['WoodDeckSF']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,wooddeck,'WoodDeckSF','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,wooddeck,'WoodDeckSF','Neighborhood')
     df.loc[(pd.isnull(df['WoodDeckSF'])), 'WoodDeckSF']=0
     return df
 
@@ -574,21 +574,21 @@ def cleanOpenPorchSF(df):
 def cleanEnclosedPorch(df):
     if pd.isnull(df['EnclosedPorch']).sum()>0:
         enclosedporch=df[pd.isnull(df['EnclosedPorch']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,enclosedporch,'EnclosedPorch','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,enclosedporch,'EnclosedPorch','Neighborhood')
     df.loc[(pd.isnull(df['EnclosedPorch'])), 'EnclosedPorch']=0
     return df
 
 def clean3SsnPorch(df):
     if pd.isnull(df['3SsnPorch']).sum()>0:
         porch3ssn=df[pd.isnull(df['3SsnPorch']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,porch3ssn,'3SsnPorch','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,porch3ssn,'3SsnPorch','Neighborhood')
     df.loc[(pd.isnull(df['3SsnPorch'])), '3SsnPorch']=0
     return df
 
 def cleanScreenPorch(df):
     if pd.isnull(df['ScreenPorch']).sum()>0:
         screenporch=df[pd.isnull(df['ScreenPorch']) & (df['GrLivArea']>0)]
-        impute_subset_with_grouping_mean(df,screenporch,'ScreenPorch','Neighborhood')
+        helpers.impute_subset_with_grouping_mean(df,screenporch,'ScreenPorch','Neighborhood')
     df.loc[(pd.isnull(df['ScreenPorch'])), 'ScreenPorch']=0
     return df
 
@@ -600,7 +600,7 @@ def cleanPoolArea(df):
 def cleanPoolQC(df):
     if pd.isnull(df['PoolQC']).sum()>0:
         poolqc=df[pd.isnull(df['PoolQC']) & (df['PoolArea']>0)]
-        impute_subset_with_mode(df,poolqc,'PoolQC','Neighborhood')
+        helpers.impute_subset_with_mode(df,poolqc,'PoolQC','Neighborhood')
     df.loc[(pd.isnull(df['PoolQC'])), 'PoolQC']="DNE"
     df.PoolQC = df.PoolQC.replace({'DNE':0, 'Po':1, 'Fa': 2, 'TA':3, 'Gd':4, 'Ex':5})
     return df
@@ -608,7 +608,7 @@ def cleanPoolQC(df):
 def cleanFence(df):
     if pd.isnull(df['Fence']).sum()>0:
         fence=df[pd.isnull(df['Fence'])]
-        impute_subset_with_mode(df,fence,'Fence','Neighborhood')
+        helpers.impute_subset_with_mode(df,fence,'Fence','Neighborhood')
     df.loc[(pd.isnull(df['Fence'])), 'Fence']="DNE"
     df.Fence = df.Fence.replace({'DNE':0, 'MnWw':1, 'GdWo': 2, 'MnPrv':3, 'GdPrv':4})
     return df
@@ -627,19 +627,19 @@ def cleanMiscVal(df):
 def cleanMoSold(df):
     if pd.isnull(df['MoSold']).sum()>0:
         mosold=df[pd.isnull(df['MoSold'])]
-        impute_subset_with_mode(df,mosold,'MoSold','Neighborhood')
+        helpers.impute_subset_with_mode(df,mosold,'MoSold','Neighborhood')
     return df
 
 def cleanYrSold(df):
     if pd.isnull(df['YrSold']).sum()>0:
         yrsold=df[pd.isnull(df['YrSold'])]
-        impute_subset_with_mode(df,yrsold,'YrSold','Neighborhood')
+        helpers.impute_subset_with_mode(df,yrsold,'YrSold','Neighborhood')
     return df
 
 def cleanSaleType(df):
     if pd.isnull(df['SaleType']).sum()>0:
         saletype=df[pd.isnull(df['SaleType'])]
-        impute_subset_with_mode(df,saletype,'SaleType','Neighborhood')
+        helpers.impute_subset_with_mode(df,saletype,'SaleType','Neighborhood')
     df['NewHome']=df.SaleType.map(lambda t:1 if t=="New" else 0)
     df.drop(['SaleType'],axis=1, inplace=True)
 
@@ -648,7 +648,7 @@ def cleanSaleType(df):
 def cleanSaleCondition(df):
     if pd.isnull(df['SaleCondition']).sum()>0:
         salecondition=df[pd.isnull(df['SaleCondition'])]
-        impute_subset_with_mode(df,salecondition,'SaleCondition','Neighborhood')
+        helpers.impute_subset_with_mode(df,salecondition,'SaleCondition','Neighborhood')
     df['NormalSale']=df.SaleCondition.map(lambda t:1 if t=="Normal Sale" else 0)
     df.drop(['SaleCondition'],axis=1, inplace=True)
     return df
