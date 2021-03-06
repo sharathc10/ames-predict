@@ -508,6 +508,7 @@ def cleanGarageYrBlt(df):
         garageyear=df[pd.isnull(df['GarageYrBlt']) & (df['GarageArea']>0)]
         impute_subset_with_mode(df,garageyear,'GarageYrBlt','Neighborhood')
     df.loc[(pd.isnull(df['GarageYrBlt'])), 'GarageYrBlt']="DNE"
+    df.GarageYrBlt = df.GarageYrBlt.replace({'DNE':0})
   
     return df
 
